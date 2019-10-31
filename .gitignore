@@ -1,0 +1,26 @@
+*~
+_Store
+*.swp
+# ignore build folder(s)
+build/
+build-*/
+build_*/
+
+# ignore python binary
+*.pyc
+
+# Manually copied protobuf generated python
+utils/boteye_stats_pb2.py
+
+# Qt creator tmp files
+CMakeLists.txt.user
+
+# VS code
+.vscode/
+
+# Clion
+cmake-build-debug/
+.idea/
+
+# Ignore the auto-generated version file
+XP/include/XP/xp_version.h
