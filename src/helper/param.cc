@@ -203,4 +203,32 @@ Emitter& operator << (Emitter& out, const cv::Matx<float, M, N>& v) {
   return out;
 }
 
+}  // namespace Yaml
+
+namespace XP {
+
+YAML::Node ParamBase::deserialize(const std::string &filename) {
+  std::ifstream in(filename);
+  CHECK(in.is_open()) << "Cannot load file " << filename;
+  in.close();
+  YAML::Node node = YAML::LoadFile(filename);
+  return node;
+}
+
+YAML::Node ParamBase::deserializeFromString(const std::string &yaml_str) {
+  CHECK(!yaml_str.empty());
+  YAML::Node node = YAML::Load(yaml_str);
+  return node;
+}
+
+void ParamBase::serialize(const std::string &filename, const YAML::Emitter &emitter) {
+  std::ofstream fout(filename);
+  fout << emitter.c_str();
+}
+
+void ParamBase::serializeToString(const YAML::Emitter &emitter, std::string *yaml_str) {
+  CHECK_NOTNULL(yaml_str);
+  *yaml_str = emitter.c_str();
+}
+
 }  // namespace XP
