@@ -1,0 +1,14 @@
+<launch>
+    <node pkg="reloc_msg_filter" type="reloc_msg_filter" name="reloc_msg_filter_node" output="screen">
+        <rosparam>
+            CamWorld_to_AmclWorld: [1, 0, 0, 0,
+                                    0, 1, 0, 0,
+                                    0, 0, 1, 0,
+                                    0, 0, 0, 1]
+            BaseLink_to_Cam:       [1, 0, 0, 0,
+                                    0, 1, 0, 0,
+                                    0, 0, 1, 0,
+                                    0, 0, 0, 1]
+        </rosparam>
+    </node>
+</launch>

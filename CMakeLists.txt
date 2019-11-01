@@ -2,7 +2,12 @@ cmake_minimum_required(VERSION 2.8.3)
 project(reloc_msg_filter)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/Modules/")
+
+# 3rdparty dependency
+message("Adding 3rd party libs")
+include(cmake/3rdparty_helper.cmake)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -118,13 +123,17 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
   include
+  ${EIGEN_INCLUDE_DIR}
+  ${YAMLCPP_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
+  ${GLOG_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/reloc_msg_filter.cpp
-# )
+add_library(${PROJECT_NAME}
+  src/helper/param.cc
+  src/helper/param_internal.cc
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -148,6 +157,9 @@ add_executable(${PROJECT_NAME}_node src/reloc_msg_filter_node.cc)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node
+  ${PROJECT_NAME}
+  ${GLOG_LIBRARIES}
+  ${YAMLCPP_LIBRARIES}
   ${catkin_LIBRARIES}
 )
 

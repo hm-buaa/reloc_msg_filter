@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 #include <std_msgs/String.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
-#include <ViSlam.h>
+#include <message/ViSlam.h>
 
 bool is_init = false;
 bool reloc_signal = false;
