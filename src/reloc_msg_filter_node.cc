@@ -53,8 +53,7 @@ void initParameters() {
   if (env_p == nullptr) {
     LOG(FATAL) << "You must set MASTER_DIR first";
   }
-  std::string alg_param_file = std::string(env_p) + "/config/reloc_msg_filter.yaml";
-  std::string reloc_msg_config_file;
+  std::string reloc_msg_config_file = std::string(env_p) + "/config/reloc_msg_filter.yaml";
   LOG(INFO) << "loading " << reloc_msg_config_file;
   CHECK(reloc_msg_filter_param.LoadFromYaml(reloc_msg_config_file))
   << "Fail to load reloc msg filter parameters from: "
@@ -62,29 +61,31 @@ void initParameters() {
 }
 
 void refreshRelocPose(XP::ViSlamConstPtr msg) {
-  latest_anchor_tp = msg->anchor_stamp;
   refreshed_reloc_pose = msg->pose_stamped;
+  latest_anchor_tp = msg->anchor_stamp;
   reloc_signal = true;
 }
 
 void rawRelocMsgCallBack(XP::ViSlamConstPtr msg) {
   if (!is_init) {
+    ROS_INFO_STREAM("First ViSlam reloc pose received.");
     // first reloc pose received
     refreshRelocPose(msg);
     is_init = true;
   } else if (latest_anchor_tp < msg->anchor_stamp) {
+    ROS_INFO_STREAM("New ViSlam reloc pose reveived");
     // new reloc pose received
     refreshRelocPose(msg);
   }
 }
 
 int main(int argc, char **argv) {
+  // google::InitGoogleLogging(argv[0]);	
   initParameters();
-
   ros::init(argc, argv, "ros_msg_filter");
   ros::NodeHandle n;
   ros::Publisher reloc_msg_pub =
-    n.advertise<geometry_msgs::PoseWithCovarianceStamped>("reloc_camera_pose", 1);
+    n.advertise<geometry_msgs::PoseWithCovarianceStamped>("reloc_amcl_pose", 1);
   // TODO(meng): subscribed topic name needs to be verified
   ros::Subscriber sub = n.subscribe("vi_slam", 1, rawRelocMsgCallBack);
 
