@@ -97,8 +97,10 @@ template<>
 struct convert<XP::RelocMsgFilterParam::Transform_t> {
   static Node encode(const XP::RelocMsgFilterParam::Transform_t& rhs) {
     Node node;
+    node["use_homography"] = rhs.use_homography;
     node["Cam_to_Base"] = rhs.Cam_to_Base;
     node["ViSlamW_to_AmclW"] = rhs.ViSlamW_to_AmclW;
+    node["ViSlam_to_Amcl_Homography2D"] = rhs.ViSlam_to_Amcl_Homography2D;
     return node;
   }
 
@@ -106,8 +108,10 @@ struct convert<XP::RelocMsgFilterParam::Transform_t> {
     if (!node.IsMap()) {
       return false;
     }
+    rhs.use_homography = node["use_homography"].as<bool>();
     rhs.Cam_to_Base = node["Cam_to_Base"].as<Eigen::Matrix4f>();
     rhs.ViSlamW_to_AmclW = node["ViSlamW_to_AmclW"].as<Eigen::Matrix4f>();
+    rhs.ViSlam_to_Amcl_Homography2D = node["ViSlam_to_Amcl_Homography2D"].as<Eigen::Matrix3f>();
     return true;
   }
 };

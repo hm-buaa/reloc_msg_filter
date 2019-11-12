@@ -112,8 +112,24 @@ int main(int argc, char **argv) {
       Base_to_AmclW = ViSlamW_to_AmclW * Cam_to_ViSlamW * Base_to_Cam;
 
       reloc_amcl_pose.header = refreshed_reloc_pose.header;
-      reloc_amcl_pose.pose.pose.position =
-        eigenVector3fToRosPoint(Base_to_AmclW.topRightCorner<3, 1>());
+      if (reloc_msg_filter_param.Transform.use_homography) {
+        Eigen::Vector3f vislam_point2d_hmg, amcl_point2d_hmg;
+        vislam_point2d_hmg << refreshed_reloc_pose.pose.position.x,
+                              refreshed_reloc_pose.pose.position.y,
+                              1;
+        amcl_point2d_hmg =
+            reloc_msg_filter_param.Transform.ViSlam_to_Amcl_Homography2D * vislam_point2d_hmg;
+        if (fabs(amcl_point2d_hmg[2]) < 1e-4) {
+          LOG(ERROR) << "Amcl homogeneous Point2d's last entry too small: " << amcl_point2d_hmg[2]
+                     << " Drop this reloc message.";
+          continue;
+        }
+        reloc_amcl_pose.pose.pose.position.x = amcl_point2d_hmg[0] / amcl_point2d_hmg[2];
+        reloc_amcl_pose.pose.pose.position.y = amcl_point2d_hmg[1] / amcl_point2d_hmg[2];
+      } else {
+        reloc_amcl_pose.pose.pose.position =
+            eigenVector3fToRosPoint(Base_to_AmclW.topRightCorner<3, 1>());
+      }
       reloc_amcl_pose.pose.pose.orientation =
         eigenRotationMatrixToRosQuaternion(Base_to_AmclW.topLeftCorner<3, 3>());
 

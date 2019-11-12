@@ -31,8 +31,10 @@ class RelocMsgFilterParam : public ParamBase {
   bool WriteToCvYaml(const std::string& filename) override;
 
   struct Transform_t {
+    bool use_homography = true;
     Eigen::Matrix4f Cam_to_Base = Eigen::Matrix4f::Identity();
     Eigen::Matrix4f ViSlamW_to_AmclW = Eigen::Matrix4f::Identity();
+    Eigen::Matrix3f ViSlam_to_Amcl_Homography2D = Eigen::Matrix3f::Identity();
   } Transform;
 };
 
